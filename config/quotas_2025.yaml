@@ -1,0 +1,72 @@
+# Annual Team Quota File – 2025
+# ─────────────────────────────────────────────────────────────────────────────
+# This file is created at the END of 2024 to lock in each team's pre-committed
+# resource quotas and billing tier for the entire year 2025.
+#
+# How to use:
+#   1. Each team estimates their build-minute needs per resource type.
+#   2. Confirm the commitment_tier that matches (or exceeds) their expected
+#      annual spend.  The discount shown in pricing.yaml will be applied.
+#   3. Lock this file into source control before Jan 1 of the billing year.
+#   4. Run `jenkins-billing quote --year 2025` to generate pro-forma invoices.
+#
+# Fields per team:
+#   name              – unique team identifier (matches Jenkins folder/label)
+#   commitment_tier   – bronze | silver | gold | platinum
+#   ec2_quotas        – list of {instance_type, annual_minutes} commitments
+#   mac_mini_quota    – {dedicated_slots: N, shared_annual_minutes: M}
+#                       set dedicated_slots: 0 if team uses shared pool only
+# ─────────────────────────────────────────────────────────────────────────────
+
+schema_version: "1.0"
+billing_year: 2025
+
+teams:
+  - name: platform
+    commitment_tier: gold
+    ec2_quotas:
+      - instance_type: c5.2xlarge
+        annual_minutes: 50000       # ~833 build-hours/year
+      - instance_type: t3.large
+        annual_minutes: 30000
+    mac_mini_quota:
+      dedicated_slots: 1
+      shared_annual_minutes: 0
+
+  - name: mobile-ios
+    commitment_tier: platinum
+    ec2_quotas:
+      - instance_type: t3.medium
+        annual_minutes: 20000
+    mac_mini_quota:
+      dedicated_slots: 2
+      shared_annual_minutes: 5000
+
+  - name: backend
+    commitment_tier: silver
+    ec2_quotas:
+      - instance_type: t3.xlarge
+        annual_minutes: 40000
+      - instance_type: c5.4xlarge
+        annual_minutes: 10000
+    mac_mini_quota:
+      dedicated_slots: 0
+      shared_annual_minutes: 0
+
+  - name: data-engineering
+    commitment_tier: silver
+    ec2_quotas:
+      - instance_type: m5.4xlarge
+        annual_minutes: 25000
+    mac_mini_quota:
+      dedicated_slots: 0
+      shared_annual_minutes: 0
+
+  - name: frontend
+    commitment_tier: bronze
+    ec2_quotas:
+      - instance_type: t3.medium
+        annual_minutes: 15000
+    mac_mini_quota:
+      dedicated_slots: 0
+      shared_annual_minutes: 2000

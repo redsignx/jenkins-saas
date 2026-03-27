@@ -1,0 +1,89 @@
+# Jenkins SaaS Pricing Configuration
+# This file defines the unit rates for all build agent resource types.
+# Rates are in USD per build-minute consumed.
+# Update this file at year-end to set rates for the coming year.
+
+schema_version: "1.0"
+
+# ──────────────────────────────────────────────
+# EC2 Fleet Agent pricing (per build-minute)
+# ──────────────────────────────────────────────
+# Each entry maps an EC2 instance type to a USD/minute rate.
+# The rate should cover:
+#   - EC2 on-demand / Savings Plan cost
+#   - Jenkins controller overhead allocation
+#   - Support & operations margin
+ec2_fleet:
+  - instance_type: t3.medium
+    vcpu: 2
+    memory_gb: 4
+    rate_per_minute: 0.0030     # ~$0.18/hr all-in
+
+  - instance_type: t3.large
+    vcpu: 2
+    memory_gb: 8
+    rate_per_minute: 0.0055
+
+  - instance_type: t3.xlarge
+    vcpu: 4
+    memory_gb: 16
+    rate_per_minute: 0.0110
+
+  - instance_type: c5.2xlarge
+    vcpu: 8
+    memory_gb: 16
+    rate_per_minute: 0.0200
+
+  - instance_type: c5.4xlarge
+    vcpu: 16
+    memory_gb: 32
+    rate_per_minute: 0.0390
+
+  - instance_type: m5.4xlarge
+    vcpu: 16
+    memory_gb: 64
+    rate_per_minute: 0.0460
+
+# ──────────────────────────────────────────────
+# Mac Mini (on-prem) iOS Agent pricing
+# ──────────────────────────────────────────────
+# Mac Minis are physical hardware shared across teams.
+# We model cost as a fixed annual capacity charge per Mac Mini slot,
+# plus a per-build-minute utilisation charge.
+mac_mini:
+  # Annual capacity reservation per dedicated Mac Mini slot (USD/year).
+  # Teams that reserve a dedicated slot pay this regardless of actual usage.
+  dedicated_slot_annual: 2400.00    # $200/month equivalent
+
+  # Per-build-minute rate for shared (non-dedicated) Mac Mini usage.
+  shared_rate_per_minute: 0.0080
+
+# ──────────────────────────────────────────────
+# Annual commitment discount tiers
+# ──────────────────────────────────────────────
+# Teams pre-commit to a minimum annual spend at year-end.
+# In return they receive a discount on all charges for that year.
+commitment_tiers:
+  - name: bronze
+    min_annual_usd: 0
+    discount_pct: 0           # no discount for pay-as-you-go
+
+  - name: silver
+    min_annual_usd: 5000
+    discount_pct: 5
+
+  - name: gold
+    min_annual_usd: 15000
+    discount_pct: 10
+
+  - name: platinum
+    min_annual_usd: 40000
+    discount_pct: 15
+
+# ──────────────────────────────────────────────
+# Overage policy
+# ──────────────────────────────────────────────
+# When a team's actual usage exceeds their pre-committed quota,
+# overage build-minutes are billed at the standard rate multiplied
+# by this factor.  Set to 1.0 for no penalty.
+overage_multiplier: 1.20
